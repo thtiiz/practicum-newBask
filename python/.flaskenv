@@ -1,2 +1,1 @@
-FLASK_APP=test-peri.py
-FLASK_ENV=development
+FLASK_APP=nba.py

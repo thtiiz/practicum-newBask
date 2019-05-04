@@ -8,7 +8,8 @@ class Game extends Component {
         this.state = {
             score: 0,
             curTime: 0,
-            light: 1024
+            light: 1024,
+            name: ''
         }
         this.GetScore = this.GetScore.bind(this)
         this.StartGame = this.StartGame.bind(this)
@@ -35,10 +36,28 @@ class Game extends Component {
         }
     }
     StartGame() {
-        this.setState({ curTime: 10 })
+        this.setState({ curTime: 1 })
         setTimeout(1000)
         this.timer = setInterval(this.Timer, 1000)
-        this.score = setInterval(this.GetScore, 10);
+        this.score = setInterval(this.GetScore, 100);
+    }
+    handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            axios({
+                method: 'post',
+                url: 'http://localhost:5000/timeout',
+                data: {
+                    name: this.state.name, // This is the body part
+                }
+            }).then(res => {
+                console.log(res);
+            })
+        }
+    }
+    handleChange = (e) => {
+        this.setState({
+            name: e.target.value
+        })
     }
     render() {
         return (
@@ -50,6 +69,7 @@ class Game extends Component {
                     <h2>{this.state.curTime}</h2>
                     <a className="button is-primary" onClick={this.StartGame}>Start</a>
                 </div>
+                <input className="input" type="text" placeholder="Text input" onKeyDown={this.handleKeyDown} onChange={this.handleChange} />
             </div>
         );
     }
