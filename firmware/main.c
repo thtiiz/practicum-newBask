@@ -6,10 +6,11 @@
 #include "peri.h"
 #include "usbdrv.h"
 
-#define RQ_SET_LED         0
-#define RQ_SET_LED_VALUE   1
-#define RQ_GET_SWITCH      2
-#define RQ_GET_LIGHT       3
+#define RQ_SET_LED          0
+#define RQ_SET_LED_VALUE    1
+#define RQ_GET_SWITCH_LEFT  2
+#define RQ_GET_SWITCH_RIGHT 3
+#define RQ_GET_LIGHT        4
 
 /* ------------------------------------------------------------------------- */
 /* ----------------------------- USB interface ----------------------------- */
@@ -19,7 +20,7 @@ usbMsgLen_t usbFunctionSetup(uint8_t data[8])
     usbRequest_t *rq = (void *)data;
 
     /* declared as static so they stay valid when usbFunctionSetup returns */
-    static uint8_t switch_state;
+    static uint8_t switch_left_state, switch_right_state;
     static uint16_t light_value;
 
     if (rq->bRequest == RQ_SET_LED)
@@ -30,12 +31,21 @@ usbMsgLen_t usbFunctionSetup(uint8_t data[8])
         return 0;
     }
 
-    else if (rq->bRequest == RQ_GET_SWITCH)
+    else if (rq->bRequest == RQ_GET_SWITCH_LEFT)
     {
-        switch_state = SWITCH_PRESSED();
+        switch_left_state = SWITCH_LEFT_PRESSED();
+        /* point usbMsgPtr to the data to be returned to host */
+        usbMsgPtr = &switch_left_state;
+
+        /* return the number of bytes of data to be returned to host */
+        return 1;
+    }
+    else if (rq->bRequest == RQ_GET_SWITCH_RIGHT)
+    {
+        switch_right_state = SWITCH_RIGHT_PRESSED();
 
         /* point usbMsgPtr to the data to be returned to host */
-        usbMsgPtr = &switch_state;
+        usbMsgPtr = &switch_right_state;
 
         /* return the number of bytes of data to be returned to host */
         return 1;
@@ -43,16 +53,17 @@ usbMsgLen_t usbFunctionSetup(uint8_t data[8])
     else if (rq->bRequest == RQ_SET_LED_VALUE)
     {
     	uint8_t led_value = rq->wValue.bytes[0];
-	set_led_value(led_value);
-	return 0;
+        set_led_value(led_value);
+        return 0;
     }
+
     else if (rq->bRequest == RQ_GET_LIGHT)
     {
     	light_value = read_adc(PC4);
 	/* point usbMsgPtr to the data to be returned to host */
         usbMsgPtr = &light_value;
         /* return the number of bytes of data to be returned to host */
-	return 2;
+	    return 2;
     }
     /* default for not implemented requests: return no data back to host */
     return 0;

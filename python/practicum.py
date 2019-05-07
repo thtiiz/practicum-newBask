@@ -1,9 +1,10 @@
 import usb
 
-RQ_SET_LED        =  0
-RQ_SET_LED_VALUE  =  1
-RQ_GET_SWITCH     =  2
-RQ_GET_LIGHT      =  3
+RQ_SET_LED          =   0
+RQ_SET_LED_VALUE    =   1
+RQ_GET_SWITCH_LEFT  =   2
+RQ_GET_SWITCH_RIGHT =   3
+RQ_GET_LIGHT        =   4
 
 ####################################
 def find_mcu_boards():
@@ -83,12 +84,21 @@ class PeriBoard:
         self.mcu.usb_write(request=RQ_SET_LED_VALUE, value=led_value)
 
     ################################
-    def get_switch(self):
+    def get_switch_left(self):
         '''
         Return a boolean value indicating whether the switch on the peripheral
         board is currently pressed
         '''
-        state = self.mcu.usb_read(request=RQ_GET_SWITCH, length=1)
+        state = self.mcu.usb_read(request=RQ_GET_SWITCH_LEFT, length=1)
+        return state[0] == 1
+
+    ################################
+    def get_switch_right(self):
+        '''
+        Return a boolean value indicating whether the switch on the peripheral
+        board is currently pressed
+        '''
+        state = self.mcu.usb_read(request=RQ_GET_SWITCH_RIGHT, length=1)
         return state[0] == 1
 
     ################################
