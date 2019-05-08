@@ -23,7 +23,7 @@ peri = PeriBoard(mcu)
 
 score = 0
 isBall = False
-haveSkill = ['', '']
+haveSkill = ['no', 'no']
 activateSkill = [False, False]
 sw_left = False
 sw_right = False
@@ -39,7 +39,7 @@ def Initial():
     global score, isBall, haveSkill, activateSkill, sw_left, sw_right
     score = 0
     isBall = False
-    haveSkill = ['', '']
+    haveSkill = ['no', 'no']
     activateSkill = [False, False]
     sw_left = False
     sw_right = False
@@ -62,9 +62,9 @@ def ResetSkill(i):
 
 def ActivateSkill(i):
     global haveSkill, activateSkill
-    if(haveSkill[i] != ''):
+    if(haveSkill[i] != 'no'):
         activateSkill[i] = haveSkill[i]
-        haveSkill[i] = ''
+        haveSkill[i] = 'no'
         print("Activate skill:", i+1)
         threading.Timer(SKILLTIME, ResetSkill, [i]).start()
 
@@ -106,9 +106,9 @@ def HaveSkillX():
     data = request.data
     skill = (json.loads(data))['skill']
     print(skill)
-    if(haveSkill[0] == ''):
+    if(haveSkill[0] == 'no'):
         haveSkill[0] = skill
-    elif(haveSkill[1] == ''):
+    elif(haveSkill[1] == 'no'):
         haveSkill[1] = skill
     return "Active " + skill
 

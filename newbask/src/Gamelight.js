@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-// import './App.css';
+import './Game.css';
 import axios from 'axios';
+import Objective from './Objective'
 
 class Gamelight extends Component {
     constructor(props) {
@@ -14,10 +15,10 @@ class Gamelight extends Component {
             activateTimeStop: false,
             activateX2: false,
             activeSkill: [],
-            haveSkill: [],
+            haveSkill: ['no', 'no'],
             stage: 0,
-            nextStagePoint: [5, 15, 20],
-            plusTimeStage: [7, 7, 7],
+            nextStagePoint: [5, 15, 30, 100],
+            plusTimeStage: [10, 10, 10, 30],
             isEnd: false
         }
         this.GetScore = this.GetScore.bind(this)
@@ -126,19 +127,64 @@ class Gamelight extends Component {
         })
     }
     render() {
+        let { stage, nextStagePoint, plusTimeStage, haveSkill, skill } = this.state
+        let haveskill = haveSkill.map((val, i) =>
+            <figure className="image is-128x128 column" key={i}>
+                <img className="is-rounded" src={require("../assets/pic/" + val + ".png")} />
+            </figure>
+        )
+        let randomskill
+        if (skill) {
+            randomskill = (
+                <figure className="random image is-128x128">
+                    <img className="is-rounded" src={require("../assets/pic/" + skill + ".png")} />
+                </figure>
+            )
+        }
+
+        let object = this.state.nextStagePoint.map((val, i) =>
+            <Objective stage={stage} nextStagePoint={nextStagePoint[i]} plusTimeStage={plusTimeStage[i]} key={i} i={i} />
+        )
         return (
-            <div className="App">
-                <div className="App-header">
-                    <h1>Score</h1>
-                    <h2>{this.state.score}</h2>
-                    <h1>Time</h1>
-                    <h2>{this.state.curTime}</h2>
-                    <a className="button is-primary" onClick={this.handleStart}>Start</a>
+            <div className="Game">
+                <div className="columns is-centered">
+                    <h1 className="is-size-3">NU Nak Bas</h1>
                 </div>
-                <input className="input" type="text" placeholder="Text input" onKeyDown={this.handleKeyDown} onChange={this.handleChange} />
-                <h1>Activate: {this.state.activateSkill}</h1>
-                <h1>Have Skill: {this.state.haveSkill}</h1>
-                <h2>Random: {this.state.skill}</h2>
+                <div className="columns is-marginless">
+                    <div className="column is-one-fifth">
+                        {/* <Objective stage={stage} nextStagePoint={nextStagePoint} plusTimeStage={plusTimeStage} /> */}
+                        {object}
+                    </div>
+                    <div className="score column">
+                        <h1 className="is-size-1">{this.state.score}</h1>
+                        <h2 className="is-size-6">Score</h2>
+                        <div className="columns is-marginless">
+                            <div className="column">
+                                <h2 className="is-size-3">Time: {this.state.curTime}</h2>
+                            </div>
+
+                        </div>
+                        <div className="columns is-centered">
+                            {/* <div className="column"> */}
+                            {/* </div> */}
+                            <div className="columns">
+                                {randomskill}
+                            </div>
+                            <div className="columns">
+                                <p className="is-size-7">Random Skill</p>
+                            </div>
+                        </div>
+                        <a className="button is-primary" onClick={this.handleStart}>Start</a>
+                    </div>
+                    <div className="column">
+                        <div className="column">
+                            <h1>Have Skill</h1>
+                        </div>
+                        <div className="columns">
+                            {haveskill}
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

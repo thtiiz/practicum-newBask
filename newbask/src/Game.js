@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-// import './App.css';
+import './Game.css';
 import axios from 'axios';
+import Objective from './Objective'
 
 class Gamelight extends Component {
     constructor(props) {
@@ -14,10 +15,10 @@ class Gamelight extends Component {
             activateTimeStop: false,
             activateX2: false,
             activeSkill: [],
-            haveSkill: [],
+            haveSkill: ['no', 'no'],
             stage: 0,
-            nextStagePoint: [5, 15, 20],
-            plusTimeStage: [7, 7, 7],
+            nextStagePoint: [5, 15, 30, 100],
+            plusTimeStage: [10, 10, 10, 30],
             isEnd: false
         }
         this.GetScore = this.GetScore.bind(this)
@@ -27,6 +28,7 @@ class Gamelight extends Component {
         this.RandomSkill = this.RandomSkill.bind(this)
         this.handleStart = this.handleStart.bind(this)
         this.handleKeyDown = this.handleKeyDown.bind(this)
+        this.handleActivateSkill = this.handleActivateSkill.bind(this)
     }
     StartGame() {
         var { startTime } = this.state
@@ -42,11 +44,11 @@ class Gamelight extends Component {
         console.log(skill)
         axios.get(`http://localhost:5000/game`)
             .then(res => {
-                // console.log(res.data);
                 score = res.data['score'];
                 activateSkill = res.data['activateSkill'];
                 haveSkill = res.data['haveSkill'];
-                console.log(haveSkill, activateSkill);
+                // console.log(haveSkill, activateSkill);
+                this.handleActivateSkill()
                 this.setState({ activateSkill, haveSkill })
                 if (score > this.state.score) { // Update
                     if (score >= nextStagePoint[stage]) {
@@ -97,6 +99,18 @@ class Gamelight extends Component {
             // console.log(res);
         })
     }
+    handleActivateSkill() {
+        let { activateSkill } = this.state
+        if (activateSkill[0] === 'x2' && activateSkill[1] === 'x2') {
+            ;
+        }
+        if (activateSkill[0] === 'x2' || activateSkill[1] === 'x2') {
+            ;
+        }
+        if (activateSkill[0] === 'timeStop' || activateSkill[1] === 'timeStop') {
+            ;
+        }
+    }
     handleStart() {
         axios.get(`http://localhost:5000/initial`)
         this.StartGame()
@@ -126,19 +140,59 @@ class Gamelight extends Component {
         })
     }
     render() {
+        let { stage, nextStagePoint, plusTimeStage, haveSkill, skill } = this.state
+        let haveskill = haveSkill.map((val, i) =>
+            <figure className="image is-128x128 column haveskill" key={i}>
+                <img className="is-rounded" src={require("../assets/pic/" + val + ".png")} alt="haveskill" />
+            </figure>
+        )
+        let randomskill
+        if (skill) {
+            randomskill = (
+                <figure className="image is-128x128 randomskill" >
+                    <img className="is-rounded" src={require("../assets/pic/" + skill + ".png")} alt="randomskill" />
+                </figure>
+            )
+        }
+        let object = this.state.nextStagePoint.map((val, i) =>
+            <Objective stage={stage} nextStagePoint={nextStagePoint[i]} plusTimeStage={plusTimeStage[i]} key={i} i={i} />
+        )
         return (
-            <div className="App">
-                <div className="App-header">
-                    <h1>Score</h1>
-                    <h2>{this.state.score}</h2>
-                    <h1>Time</h1>
-                    <h2>{this.state.curTime}</h2>
-                    <a className="button is-primary" onClick={this.handleStart}>Start</a>
+            <div className="Game">
+                <div className="columns is-centered is-marginless">
+                    <h1 className="is-size-3">NU Nak Bas</h1>
                 </div>
-                <input className="input" type="text" placeholder="Text input" onKeyDown={this.handleKeyDown} onChange={this.handleChange} />
-                <h1>Activate: {this.state.activateSkill}</h1>
-                <h1>Have Skill: {this.state.haveSkill}</h1>
-                <h2>Random: {this.state.skill}</h2>
+                <div className="columns">
+                    <div className="column is-one-fifth is-paddingless">
+                        {/* <Objective stage={stage} nextStagePoint={nextStagePoint} plusTimeStage={plusTimeStage} /> */}
+                        {object}
+                    </div>
+                    <div className="score column">
+                        <h1 className="is-size-1">{this.state.score}</h1>
+                        <h2 className="is-size-7">Score</h2>
+                        <div className="columns is-marginless is-centered">
+                            <h2 className="is-size-5">Time: {this.state.curTime}</h2>
+                        </div>
+                        <div className="columns is-centered random">
+                            {/* <div className="is-block"> */}
+                            {randomskill}
+                            {/* </div> */}
+                        </div>
+                        <div className="columns is-centered">
+                            {/* <div className="is-block"> */}
+                            <p className="is-size-7">Random Skill</p>
+                        </div>
+                        <a className="button is-primary" onClick={this.handleStart}>Start</a>
+                    </div>
+                    <div className="column">
+                        <div className="column">
+                            <h1>Have Skill</h1>
+                        </div>
+                        <div className="columns">
+                            {haveskill}
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

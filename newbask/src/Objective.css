@@ -1,0 +1,42 @@
+.Objective {
+    padding-left: 1em;
+    padding-top: 2em;
+    opacity: 0.6;
+}
+@keyframes example {
+    from {
+        padding-left: 0;
+    }
+    to {
+        padding-left: 1em;
+    }
+}
+.line {
+    /* border: solid 2px; */
+    border-radius: 20px;
+}
+.Objective .column {
+    margin-right: 10px;
+    padding: 0;
+}
+.active {
+    opacity: 1;
+    animation-name: example;
+    animation-duration: 0.2s;
+}
+.active .score {
+    background-color: #ffcc66;
+    padding-left: 1em;
+    padding-right: 20px;
+}
+.active .time {
+    /* margin: 0; */
+    background-color: rgb(191, 190, 233);
+    /* border-radius: 15px; */
+    /* margin-right: 20px; */
+    padding-right: 20px;
+    padding-left: 20px;
+}
+.Objective .header {
+    padding-bottom: 1em;
+}

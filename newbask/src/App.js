@@ -13,7 +13,7 @@ class App extends Component {
     }
     render() {
         return (
-            <div className="container-fluid">
+            <div className="App container-fluid">
                 <Route exact path="/" component={Game} />
                 <Route path="/gamelight" component={Gamelight} />
                 <Route path="/scoreboard" component={Scoreboard} />
