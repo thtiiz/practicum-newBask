@@ -11,23 +11,15 @@ class Objective extends Component {
         var { stage, nextStagePoint, plusTimeStage, i } = this.props
         // console.log(this.props)
         var objectStyle = (i === stage) ? "Objective active" : "Objective"
-        var fontStyle = (i == stage) ? "is-size-6" : "is-size-7"
-        const list =
-            <div className="columns">
-                <div className="score column">
-                    <p className={fontStyle}>{nextStagePoint}</p>
-                </div>
-                <div className="time column">
-                    <p className={fontStyle}> +{plusTimeStage}s</p>
-                </div>
-            </div>
-        const score = <div className="score column">
+        var fontStyle = (i === stage) ? "is-size-6" : "is-size-7"
+        var score =
+            // <div className="score column">
             <p className={fontStyle}>{nextStagePoint}</p>
-        </div>
-        const time = <div className="time column">
+        // </div>
+        var time =
+            // <div className="time column">
             <p className={fontStyle}> +{plusTimeStage}s</p>
-        </div>
-        // console.log(list);
+        // </div>
         return (
             <div className={objectStyle}>
                 <div className="line columns">
@@ -40,7 +32,6 @@ class Objective extends Component {
                         {time}
                     </div>
                 </div>
-                {/* {list} */}
             </div>
         );
     }

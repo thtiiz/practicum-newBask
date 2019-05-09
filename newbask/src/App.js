@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Game from './Game'
-import Gamelight from './Gamelight'
+// import Gamelight from './Gamelight'
 import Scoreboard from './Scoreboard'
 import { Route } from 'react-router-dom'
 
@@ -15,7 +15,7 @@ class App extends Component {
         return (
             <div className="App container-fluid">
                 <Route exact path="/" component={Game} />
-                <Route path="/gamelight" component={Gamelight} />
+                {/* <Route path="/gamelight" component={Gamelight} /> */}
                 <Route path="/scoreboard" component={Scoreboard} />
                 {/* <Game />
                 <Scoreboard /> */}

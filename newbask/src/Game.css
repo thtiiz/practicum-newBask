@@ -1,5 +1,38 @@
 .Game {
     padding-top: 1em;
+    padding-right: 1em;
+}
+.fire {
+    position: absolute;
+    left: 35.5%;
+    top: 3%;
+    z-index: -1;
+    width: 380px;
+}
+.fire2 {
+    position: absolute;
+    left: 38%;
+    top: 4%;
+    z-index: -1;
+    width: 300px;
+}
+.timegif {
+    position: absolute;
+}
+.inactive-gif {
+    visibility: hidden;
+}
+.active-gif {
+    animation: revealfire 5s;
+    /* animation: hiddenfire 5s; */
+}
+.x2 {
+}
+.timestop {
+    /* background-color: rgba(47, 47, 180, 0.555); */
+}
+.onfire {
+    /* background-color: #46da38; */
 }
 .Game .score {
     padding-left: 5em;
@@ -20,6 +53,21 @@
 h1 h2 p {
     font-size: 10em;
 }
+@keyframes revealfire {
+    0% {
+        opacity: 0;
+    }
+    7% {
+        opacity: 1;
+    }
+    93% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 @keyframes shake {
     10%,
     90% {

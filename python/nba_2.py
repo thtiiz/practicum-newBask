@@ -6,8 +6,6 @@ import threading
 app = Flask(__name__)
 CORS(app)
 
-length_ball_score = 400
-
 devs = find_mcu_boards()
 if len(devs) == 0:
     print("*** No practicum board found.")
@@ -21,10 +19,11 @@ print("*** Product: %s" % \
         mcu.handle.getString(mcu.device.iProduct, 256))
 peri = PeriBoard(mcu)
 
+length_ball_score = 550
 score = 0
 isBall = False
 haveSkill = ['no', 'no']
-activateSkill = [False, False]
+activateSkill = ['', '']
 sw_left = False
 sw_right = False
 SKILLTIME = 5
@@ -40,7 +39,7 @@ def Initial():
     score = 0
     isBall = False
     haveSkill = ['no', 'no']
-    activateSkill = [False, False]
+    activateSkill = ['', '']
     sw_left = False
     sw_right = False
 
@@ -57,7 +56,7 @@ def UpdateScore(scoreBoard):
 
 def ResetSkill(i):
     global activateSkill
-    activateSkill[i] = False
+    activateSkill[i] = ''
     print("set x to", activateSkill[i])
 
 def ActivateSkill(i):

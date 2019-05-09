@@ -1,7 +1,7 @@
 .Objective {
     padding-left: 1em;
     padding-top: 2em;
-    opacity: 0.6;
+    opacity: 0.4;
 }
 @keyframes example {
     from {
@@ -9,6 +9,16 @@
     }
     to {
         padding-left: 1em;
+    }
+}
+@keyframes reveal {
+    from {
+        transform: translateX(-200px);
+        opacity: 0.4;
+    }
+    to {
+        transform: none;
+        opacity: 1;
     }
 }
 .line {
@@ -21,7 +31,7 @@
 }
 .active {
     opacity: 1;
-    animation-name: example;
+    animation-name: reveal;
     animation-duration: 0.2s;
 }
 .active .score {
