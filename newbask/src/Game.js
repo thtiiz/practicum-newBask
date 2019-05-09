@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router'
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 import './Game.css';
 import Objective from './Objective'
 import Inputname from './Inputname'
 import fire from '../assets/pic/fire.gif'
 import fire2 from '../assets/pic/fire2.gif'
-import timegif from '../assets/pic/timegif.gif'
+// import timegif from '../assets/pic/timegif.gif'
 
 class Game extends Component {
     constructor(props) {
@@ -15,7 +14,8 @@ class Game extends Component {
         this.state = {
             score: 0,
             curTime: 0,
-            startTime: 30,
+            startTime: 50,
+            randomTime: 10000,
             name: '',
             skill: '',
             activateTimeStop: false,
@@ -23,12 +23,13 @@ class Game extends Component {
             activeSkill: ['', ''],
             haveSkill: ['no', 'no'],
             stage: 0,
-            nextStagePoint: [5, 15, 30, 100],
-            plusTimeStage: [10, 10, 10, 30],
+            nextStagePoint: [5, 15, 25, 40],
+            plusTimeStage: [10, 15, 20, 30],
             isEnd: false,
-            modalStyle: "modal is-active",
+            modalStyle: "modal",
             redirect: false
         }
+        this.startRef = React.createRef();
         this.GetScore = this.GetScore.bind(this)
         this.StartGame = this.StartGame.bind(this)
         this.Timer = this.Timer.bind(this)
@@ -36,15 +37,28 @@ class Game extends Component {
         this.RandomSkill = this.RandomSkill.bind(this)
         this.handleStart = this.handleStart.bind(this)
         this.handleKeyDown = this.handleKeyDown.bind(this)
-        this.handleactiveSkill = this.handleactiveSkill.bind(this)
+        this.escFunction = this.escFunction.bind(this);
+    }
+    escFunction(event) {
+        console.log(event);
+        if (event.keyCode === 32) { //spacebar pressed
+            this.startRef.current.click();
+            document.removeEventListener("keydown", this.escFunction, false);
+        }
+    }
+    componentDidMount() {
+        document.addEventListener("keydown", this.escFunction, false);
+    }
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this.escFunction, false);
     }
     StartGame() {
-        var { startTime } = this.state
+        var { startTime, randomTime } = this.state
         this.setState({ curTime: startTime })
         setTimeout(1000)
-        this.score = setInterval(this.GetScore, 20)
+        this.score = setInterval(this.GetScore, 10)
         this.timer = setInterval(this.Timer, 1000)
-        this.randomskill = setInterval(this.RandomSkill, 5000)
+        this.randomskill = setInterval(this.RandomSkill, randomTime)
     }
     GetScore() {
         let score, activeSkill, haveSkill
@@ -109,18 +123,6 @@ class Game extends Component {
             // console.log(res);
         })
     }
-    handleactiveSkill() {
-        let { activeSkill } = this.state
-        if (activeSkill[0] === 'x2' && activeSkill[1] === 'x2') {
-            ;
-        }
-        if (activeSkill[0] === 'x2' || activeSkill[1] === 'x2') {
-            ;
-        }
-        if (activeSkill[0] === 'timeStop' || activeSkill[1] === 'timeStop') {
-            ;
-        }
-    }
     handleStart() {
         axios.get(`http://localhost:5000/initial`)
         this.StartGame()
@@ -132,6 +134,7 @@ class Game extends Component {
         })
     }
     handleKeyDown = (e) => {
+        console.log(e.key);
         if (e.key === 'Enter') {
             axios({
                 method: 'post',
@@ -154,14 +157,13 @@ class Game extends Component {
         console.log(this.state.name)
     }
     firegif = (fireState) => {
-        // console.log(fireState)
         if (fireState === "fire")
             return fire
         else if (fireState === "fire2")
             return fire2
     }
     render() {
-        let { stage, nextStagePoint, plusTimeStage, haveSkill, skill, activeSkill, name } = this.state
+        let { stage, nextStagePoint, plusTimeStage, haveSkill, skill, activeSkill } = this.state
         let haveskill = haveSkill.map((val, i) =>
             <figure className="image is-128x128 column haveskill" key={i}>
                 <img className="is-rounded" src={require("../assets/pic/" + val + ".png")} alt="haveskill" />
@@ -181,16 +183,15 @@ class Game extends Component {
         let gameStyle = "Game"
         let fireStyle = "fire inactive-gif"
         let fireState = ""
-        let timeStyle = "timegif inactive-gif"
+        // let timeStyle = "timegif inactive-gif"
         if (activeSkill[0] === 'x2' && activeSkill[1] === 'x2') {
             gameStyle += " onfire";
             fireStyle = "fire2 active-fire";
             fireState = "fire2"
         }
         else if (activeSkill[0] === '' && activeSkill[1] === '') {
-
             fireStyle = "fire inactive-gif"
-            timeStyle = "timegif inactive-gif"
+            // timeStyle = "timegif inactive-gif"
         }
         else {
             if (activeSkill[0] === 'x2' || activeSkill[1] === 'x2') {
@@ -200,8 +201,7 @@ class Game extends Component {
             }
             if (activeSkill[0] === 'timeStop' || activeSkill[1] === 'timeStop') {
                 gameStyle += " timestop";
-                timeStyle = "timegif active-gif";
-
+                // timeStyle = "timegif active-gif";
             }
 
         }
@@ -214,7 +214,7 @@ class Game extends Component {
             return (
                 <div className={gameStyle}>
                     <div className="columns is-centered is-marginless">
-                        <h1 className="is-size-3">NU Nak Bas</h1>
+                        <h1 className="is-size-3">Basketball 3k19</h1>
                     </div>
                     <div className="columns">
                         <div className="column is-one-fifth is-paddingless">
@@ -222,26 +222,23 @@ class Game extends Component {
                         </div>
                         <div className="score column">
                             <h1 className="is-size-1">{this.state.score}</h1>
-                            <h2 className="is-size-7">Score</h2>
+                            <h2 className="score-text is-size-6">Score</h2>
                             <img src={this.firegif(fireState)} alt="fire" className={fireStyle} />
-                            <div className="columns is-marginless is-centered">
-                                <h2 className="is-size-5">Time: {this.state.curTime}</h2>
+                            <div className="columns is-marginless is-centered time">
+                                <h2 className="is-size-3">Time: {this.state.curTime}</h2>
                                 {/* <img src={timegif} alt="timegif" className={timeStyle} /> */}
                             </div>
                             <div className="columns is-centered random">
-                                {/* <div className="is-block"> */}
                                 {randomskill}
-                                {/* </div> */}
                             </div>
                             <div className="columns is-centered">
-                                {/* <div className="is-block"> */}
                                 <p className="is-size-7">Random Skill</p>
                             </div>
-                            <a className="button is-primary" onClick={this.handleStart}>Start</a>
+                            <a className="button-start button is-primary" onClick={this.handleStart} ref={this.startRef} handleKeyDown={this.handleKeyDown}>Press spacebar</a>
                         </div>
-                        <div className="column ">
+                        <div className="column">
                             <div className="column">
-                                <h1>Have Skill</h1>
+                                <h1>My Skill</h1>
                             </div>
                             <div className="columns">
                                 {haveskill}
@@ -252,9 +249,7 @@ class Game extends Component {
                         <div className="modal-background"></div>
                         <div className="modal-content">
                             <Inputname handleKeyDown={this.handleKeyDown} handleChange={this.handleChange} score={this.state.score} />
-                            {/* <Link to="/register" >Click to Register</Link> */}
                         </div>
-                        <button className="modal-close is-large" aria-label="close"></button>
                     </div>
                 </div>
             );

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './Scoreboard.css'
 import Scorestyle from './scorestyle.json'
+import back from '../assets/pic/back.png'
 
 class Leaderboard extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ class Leaderboard extends Component {
             leaders: [],
             maxScore: 100,
             scoreboard: [],
-            myrank: 1
+            myname: ''
         };
         this.getData = this.getData.bind(this);
         this.rankstyle = this.rankstyle.bind(this);
@@ -19,8 +20,8 @@ class Leaderboard extends Component {
         console.log(this.props.location.state);
     }
     getData() {
-        let myrank = 8
-        // let myrank = this.props.myrank
+        let myname = this.props.location.state.name
+        // let myname = "opor"
         axios.get(`http://localhost:5000/scoreboard`).then(res => {
             var sortedScoreboard = []
             for (let name in res.data) {
@@ -29,20 +30,21 @@ class Leaderboard extends Component {
             sortedScoreboard.sort(function (x, y) {
                 return y[1] - x[1];
             })
-            this.setState({ scoreboard: sortedScoreboard, myrank })
+            // sortedScoreboard[: 5]
+            this.setState({ scoreboard: sortedScoreboard, myname })
             // console.log(sortedScoreboard);
         })
     }
-    rankstyle(rank) {
-        let { myrank } = this.state
+    rankstyle(name) {
+        let { myname } = this.state
         let style = "leader"
-        if (myrank === rank)
+        if (myname === name)
             style += " myrank"
         return style
     }
-    refstyle(rank) {
-        if (this.state.myrank === rank) {
-            console.log(rank);
+    refstyle(name) {
+        if (this.state.myname === name) {
+            console.log(name);
             return this.myRef
         }
         else
@@ -68,8 +70,8 @@ class Leaderboard extends Component {
                     style={{
                         animationDelay: i * 0.1 + 's'
                     }}
-                    className={this.rankstyle(i + 1)}
-                    ref={this.refstyle(i + 1)}
+                    className={this.rankstyle(el[0])}
+                    ref={this.refstyle(el[0])}
                 >
                     <div className="leader-wrap">
                         {
@@ -112,6 +114,9 @@ class Leaderboard extends Component {
             ))
         return (
             <div className="Leaderboard container has-text-justified">
+                <a href="/">
+                    <img src={back} alt="back" className="back-button" />
+                </a>
                 <h1 className="is-size-4 leaderboard-header">Leaderboard</h1>
                 <div className="leaders" >
                     {score}

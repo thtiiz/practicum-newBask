@@ -6,8 +6,6 @@ import threading
 app = Flask(__name__)
 CORS(app)
 
-length_ball_score = 400
-
 devs = find_mcu_boards()
 if len(devs) == 0:
     print("*** No practicum board found.")
@@ -21,44 +19,28 @@ print("*** Product: %s" % \
         mcu.handle.getString(mcu.device.iProduct, 256))
 peri = PeriBoard(mcu)
 
-# count = 0
+length_ball_score = 600
 score = 0
 isBall = False
-haveX2 = False
-haveTimeStop = False
-skill_score_x = 1
-time_stop = False
+haveSkill = ['no', 'no']
+activateSkill = ['', '']
 sw_left = False
 sw_right = False
-SKILLTIME = 5
 LISTENFREQ = 0.02
 
 def ButtonListener():
-    global haveX2, haveTimeStop, sw_left, sw_right
+    global sw_left, sw_right
     sw_left = peri.get_switch_left()
     sw_right = peri.get_switch_right()
-    # print("listen---", haveX2, haveTimeStop)
     threading.Timer(LISTENFREQ, ButtonListener).start()
 def Initial():
-    global score, isBall, skill_score_x, haveX2, haveTimeStop, time_stop, sw_left, sw_right
+    global score, isBall, haveSkill, activateSkill, sw_left, sw_right
     score = 0
     isBall = False
-    haveX2 = False
-    haveTimeStop = False
-    skill_score_x = 1
-    time_stop = False
+    haveSkill = ['no', 'no']
+    activateSkill = ['', '']
     sw_left = False
     sw_right = False
-
-def ResetX2():
-    global skill_score_x
-    skill_score_x = 1
-    print("set x to", skill_score_x)
-
-def ResetTimeStop():
-    global time_stop
-    time_stop = False
-    print("set timestop to ", time_stop)
 
 def ReadScore():
     filename = "score.json"
@@ -67,55 +49,53 @@ def ReadScore():
         return data
 
 def UpdateScore(scoreBoard):
-    #### Sort scoreBoard with Value ####
-    # scoreBoard = sorted(scoreBoard.items(), key=lambda x: (-x[1], x[0]))
-    # newScoreBoard = {}
-    # for i in scoreBoard:
-    #     newScoreBoard[i[0]] = i[1]
-    ####################################
     filename = "score.json"
     with open(filename, "w") as file:
         json.dump(scoreBoard, file, ensure_ascii=False, indent=4)
 
-def ActivateX2():
-    global skill_score_x, haveX2
-    if(haveX2):
-        skill_score_x = 2
-        print("set x to", skill_score_x)
-        threading.Timer(SKILLTIME, ResetX2).start()
+def ResetSkill(i):
+    global activateSkill
+    activateSkill[i] = ''
+    print("set x to", activateSkill[i])
 
-def ActivateTimeStop():
-    global haveTimeStop, time_stop
-    if(haveTimeStop):
-        time_stop = True
-        print("set time_stop to", time_stop)
-        threading.Timer(SKILLTIME, ResetTimeStop).start()
-
-    #if pressed handle ActivateX2
+def ActivateSkill(i):
+    global haveSkill, activateSkill
+    if(haveSkill[i] != 'no'):
+        activateSkill[i] = haveSkill[i]
+        haveSkill[i] = 'no'
+        print("Activate skill:", i+1)
+        if(activateSkill[i]=='x2'):
+            time = 10
+        else:
+            time = 5
+        threading.Timer(time, ResetSkill, [i]).start()
 
 ####### Listiner #########
 ButtonListener()
+##########################
 
-@app.route('/')
+@app.route('/game')
 def GameStart():
-    global score, isBall, time_stop, skill_score_x, sw_left, sw_right, haveTimeStop, haveX2
+    global score, isBall, sw_left, sw_right, haveSkill, activateSkill
     light = peri.get_light()
+    new_score = 1
+    countX2 = activateSkill.count('x2')
+    if(countX2==1):
+        new_score = 2
+    elif(countX2==2):
+        new_score = 5
     if(light < length_ball_score):
         isBall = True
     else:
         if(isBall):
-            score += skill_score_x
+            score += new_score
         isBall = False
     if (sw_left):
-        ActivateTimeStop()
+        ActivateSkill(0)
     elif (sw_right):
-        ActivateX2()
-    # else (sw_right):
-    #     ActivateX2()
+        ActivateSkill(1)
     print(light, score, isBall, sw_left, sw_right)
-    # return str(score)
-    return jsonify({"score": score, "activateTimeStop": time_stop, "activateX2": skill_score_x, "haveTimeStop": haveTimeStop, "haveX2": haveX2})
-    ##### ADD SKILL TIME STOP ######
+    return jsonify({"score": score, "activateSkill": activateSkill, "haveSkill": haveSkill})
 
 @app.route('/initial')
 def test():
@@ -124,14 +104,14 @@ def test():
 
 @app.route('/skill', methods = ['POST', 'GET'])
 def HaveSkillX():
-    global haveX2, haveTimeStop
+    global haveSkill
     data = request.data
     skill = (json.loads(data))['skill']
     print(skill)
-    if(skill == 'x2'):
-        haveX2 = True
-    elif(skill == 'timeStop'):
-        haveTimeStop = True
+    if(haveSkill[0] == 'no'):
+        haveSkill[0] = skill
+    elif(haveSkill[1] == 'no'):
+        haveSkill[1] = skill
     return "Active " + skill
 
 @app.route('/timeout', methods = ['POST', 'GET'])
@@ -142,6 +122,7 @@ def Timeout():
     scoreBoard = ReadScore()
     scoreBoard[newName] = score
     UpdateScore(scoreBoard)
+    Initial()
     return jsonify(scoreBoard)
 
 @app.route('/scoreboard')

@@ -22,6 +22,6 @@ while True:
     # light = 1
     print("Switch left state: %-8s | Switch right state: %-8s | Light value: %d" % (
             sw_left, sw_right, light))
-    sleep(0.2)
+    sleep(0.02)
 
 

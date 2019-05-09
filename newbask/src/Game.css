@@ -2,6 +2,18 @@
     padding-top: 1em;
     padding-right: 1em;
 }
+.score-text {
+    position: absolute;
+    left: 43.7%;
+    top: 35%;
+}
+.button-start {
+    margin-top: 0.65em;
+}
+.time {
+    padding-top: 1.3em;
+    padding-bottom: 1em;
+}
 .fire {
     position: absolute;
     left: 35.5%;
@@ -23,7 +35,7 @@
     visibility: hidden;
 }
 .active-gif {
-    animation: revealfire 5s;
+    animation: revealfire 10s;
     /* animation: hiddenfire 5s; */
 }
 .x2 {

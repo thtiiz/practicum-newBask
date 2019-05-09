@@ -1,6 +1,16 @@
 * {
     box-sizing: border-box;
 }
+.back-button {
+    position: absolute;
+    width: 70px;
+    left: -60px;
+    top: 60px;
+    opacity: 0.8;
+}
+.back-button:hover {
+    animation: blink 0.4s infinite;
+}
 .leaderboard-header {
     padding-bottom: 20px;
 }
@@ -77,6 +87,18 @@
 .bar {
     height: 4px;
     border-radius: 2px;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 @keyframes revealLeaders {
