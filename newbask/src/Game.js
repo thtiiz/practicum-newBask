@@ -14,7 +14,7 @@ class Game extends Component {
         this.state = {
             score: 0,
             curTime: 0,
-            startTime: 50,
+            startTime: 60,
             randomTime: 10000,
             name: '',
             skill: '',
@@ -214,15 +214,18 @@ class Game extends Component {
             return (
                 <div className={gameStyle}>
                     <div className="columns is-centered is-marginless">
-                        <h1 className="is-size-3">Basketball 3k19</h1>
+                        <h1 className="is-size-3">I'm yaoming 3k19</h1>
                     </div>
                     <div className="columns">
                         <div className="column is-one-fifth is-paddingless">
                             {object}
                         </div>
                         <div className="score column">
+                            {/* <div className="container"> */}
+
                             <h1 className="is-size-1">{this.state.score}</h1>
-                            <h2 className="score-text is-size-6">Score</h2>
+                            {/* <h2 className="score-text is-size-6">Score</h2> */}
+                            {/* </div> */}
                             <img src={this.firegif(fireState)} alt="fire" className={fireStyle} />
                             <div className="columns is-marginless is-centered time">
                                 <h2 className="is-size-3">Time: {this.state.curTime}</h2>

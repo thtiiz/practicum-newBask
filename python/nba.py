@@ -16,10 +16,10 @@ print("*** Practicum board found")
 print("*** Manufacturer: %s" % \
         mcu.handle.getString(mcu.device.iManufacturer, 256))
 print("*** Product: %s" % \
-        mcu.handle.getString(mcu.device.iProduct, 256))
+        mcu.handle.getString(mcu.device.iProduct, 256)  )
 peri = PeriBoard(mcu)
 
-length_ball_score = 600
+length_ball_score = peri.get_light()-160
 score = 0
 isBall = False
 haveSkill = ['no', 'no']
@@ -67,7 +67,7 @@ def ActivateSkill(i):
         if(activateSkill[i]=='x2'):
             time = 10
         else:
-            time = 5
+            time = 6
         threading.Timer(time, ResetSkill, [i]).start()
 
 ####### Listiner #########

@@ -17,9 +17,9 @@
 .fire {
     position: absolute;
     left: 35.5%;
-    top: 3%;
+    top: 10px;
     z-index: -1;
-    width: 380px;
+    width: 430px;
 }
 .fire2 {
     position: absolute;
@@ -35,7 +35,7 @@
     visibility: hidden;
 }
 .active-gif {
-    animation: revealfire 10s;
+    /* animation: revealfire 2s; */
     /* animation: hiddenfire 5s; */
 }
 .x2 {
@@ -71,12 +71,6 @@ h1 h2 p {
     }
     7% {
         opacity: 1;
-    }
-    93% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
     }
 }
 
